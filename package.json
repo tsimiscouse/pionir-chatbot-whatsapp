@@ -1,0 +1,39 @@
+{
+  "name": "pionir-ugm-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "A rule-based WhatsApp chatbot for PIONIR UGM using whatsapp-web.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "whatsapp",
+    "chatbot",
+    "ugm",
+    "pionir",
+    "nodejs",
+    "automation"
+  ],
+  "author": "PIONIR UGM Team",
+  "license": "MIT",
+  "dependencies": {
+    "whatsapp-web.js": "^1.23.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/pionir-ugm-whatsapp-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/pionir-ugm-whatsapp-bot/issues"
+  },
+  "homepage": "https://github.com/your-username/pionir-ugm-whatsapp-bot#readme"
+}
