@@ -13,8 +13,6 @@ Pio-Bot merupakan bot WhatsApp otomatis untuk menjawab pertanyaan seputar PIONIR
 
 - **Percakapan Interaktif**: Bot memandu pengguna melalui alur percakapan untuk mengenal mereka
 - **Sistem FAQ**: Menjawab pertanyaan umum tentang PIONIR UGM secara otomatis
-- **Session Management**: Menyimpan status percakapan setiap pengguna
-- **Auto Cleanup**: Membersihkan sesi lama (>24 jam) secara otomatis
 - **Group Protection**: Hanya merespons pesan personal, tidak di grup
 
 ## 🚀 Setup & Installation
@@ -111,15 +109,6 @@ Bot: [Jawaban FAQ tentang jadwal pendaftaran]
 
 🧹 Cleaned up old session for user: 6281234567890@c.us
 ```
-
-## 📝 Session Management
-
-Bot menyimpan informasi sesi untuk setiap pengguna:
-- **userName**: Nama pengguna yang dikumpulkan
-- **conversationState**: Status percakapan saat ini
-- **lastMessageTime**: Waktu pesan terakhir (untuk cleanup otomatis)
-
-Sesi otomatis dibersihkan setiap jam untuk sesi yang lebih dari 24 jam.
 
 ## 🛠️ Troubleshooting
 
