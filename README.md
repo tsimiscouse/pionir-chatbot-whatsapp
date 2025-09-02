@@ -1,6 +1,6 @@
-# 🤖 PIONIR UGM WhatsApp Bot
+# 🤖 Pio-Bot PIONIR UGM WhatsApp Bot
 
-Bot WhatsApp otomatis untuk menjawab pertanyaan seputar PIONIR UGM dengan sistem percakapan interaktif dan FAQ.
+Pio-Bot merupakan bot WhatsApp otomatis untuk menjawab pertanyaan seputar PIONIR UGM dengan sistem percakapan interaktif dan FAQ.
 
 ## 👥 Tim Pengembang
 
