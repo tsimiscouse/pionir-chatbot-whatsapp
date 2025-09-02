@@ -19,8 +19,8 @@
   "author": "PIONIR UGM Team",
   "license": "MIT",
   "dependencies": {
-    "whatsapp-web.js": "^1.23.0",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "github:BenyFilho/whatsapp-web.js#fix_event_ready_again"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

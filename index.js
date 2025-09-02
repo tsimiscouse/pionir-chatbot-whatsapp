@@ -5,6 +5,8 @@ const faqData = require('./faq_data.js');
 // In-memory storage for user conversations and states
 const userSessions = {};
 
+const authorizedNumber = '628118491177@c.us';
+
 // Helper function to get or create user session
 function getUserSession(userId) {
     if (!userSessions[userId]) {
@@ -73,6 +75,10 @@ client.on('disconnected', (reason) => {
 // Main message processing logic with conversation state management
 client.on('message', async (message) => {
     try {
+        if (message.from !== authorizedNumber) {
+            console.log(`🚫 Received message from unauthorized number: ${message.from}`);
+            return; 
+        }
         // Skip messages sent by the bot itself
         if (message.fromMe) return;
 
@@ -93,6 +99,24 @@ client.on('message', async (message) => {
         console.log(`\n📨 Received message from ${userId}: "${message.body}"`);
         console.log(`🔄 Current user session state: ${userSession.conversationState}`);
 
+        if (messageText === '/start') {
+            userSession.conversationState = 'initial';
+            userSession.userName = null;
+            const startMessage = "🤖 Halo! Saya adalah Pio-Bot. Mari kita mulai percakapan baru. Silakan ketik 'halo' atau sapaan lainnya untuk memulai. 😊";
+            await message.reply(startMessage);
+            console.log(`✨ Conversation started with user: ${userId}`);
+            return;
+        }
+
+        if (messageText === '/end' || messageText === 'bye' || messageText === 'exit' || messageText === 'tidak') {
+            userSession.conversationState = 'initial';
+            userSession.userName = null;
+            const endMessage = "Terima kasih sudah berbincang dengan Pio-Bot! Sampai jumpa lagi 👋.";
+            await message.reply(endMessage);
+            console.log(`🔚 Conversation ended with user: ${userId}`);
+            return;
+        }
+
         let responseSent = false;
 
         // --- Handle Conversation Flow Based on State ---
@@ -108,10 +132,10 @@ client.on('message', async (message) => {
             const nameRule = faqData.find(rule => rule.regex.test(messageText) && rule.hasCaptureGroup);
             if (nameRule) {
                 const match = message.body.match(nameRule.regex);
-                if (match && match[2]) {
-                    const extractedName = match[2].trim();
+                if (match && match[1]) {
+                    const extractedName = match[1].trim();
                     userSession.userName = extractedName;
-                    const responseText = nameRule.answer.replace('$2', extractedName);
+                    const responseText = nameRule.answer.replace('$1', extractedName);
                     await message.reply(responseText);
                     userSession.conversationState = 'waitingForConsent';
                     responseSent = true;
@@ -121,39 +145,12 @@ client.on('message', async (message) => {
                  responseSent = true;
             }
         }
-        else if (userSession.conversationState === 'waitingForConsent') {
-            const consentRule = faqData.find(rule => rule.regex.test(messageText) && rule.type);
-            if (consentRule) {
-                await message.reply(consentRule.answer);
-                userSession.conversationState = consentRule.type === 'convo-start' ? 'waitingForFaculty' : 'general_qa';
-                responseSent = true;
-            } else {
-                await message.reply("Bolehkan aku mengenalmu lebih jauh? Kamu bisa jawab 'iya' atau 'tidak'.");
-                responseSent = true;
-            }
-        }
-        else if (userSession.conversationState === 'waitingForFaculty') {
-            const facultyRule = faqData.find(rule => rule.regex.test(messageText));
-            if (facultyRule) {
-                await message.reply(facultyRule.answer);
-                userSession.conversationState = 'waitingForFeeling';
-                responseSent = true;
-            } else {
-                await message.reply("Maaf, nama fakultas yang kamu sebutkan tidak terdeteksi. Coba sebutkan lagi, atau ketik 'bantuan' untuk melihat daftar fakultas.");
-                responseSent = true;
-            }
-        }
-        else if (userSession.conversationState === 'waitingForFeeling') {
-            const feelingRule = faqData.find(rule => rule.regex.test(messageText) && rule.hasCaptureGroup);
-            if (feelingRule) {
-                await message.reply(feelingRule.answer);
-                userSession.conversationState = 'general_qa'; // End of intro convo, move to general Q&A
-                responseSent = true;
-            } else {
-                await message.reply("Aku mengerti. Jika kamu tidak ingin bercerita, tidak apa-apa. Sekarang, ada pertanyaan lain tentang PIONIR UGM?");
-                userSession.conversationState = 'general_qa';
-                responseSent = true;
-            }
+
+        const generalInquiryRule = faqData.find(rule => rule.regex.test(messageText) && rule.type === 'general-inquiry');
+        if (generalInquiryRule) {
+            await message.reply(generalInquiryRule.answer);
+            userSession.conversationState = 'general_qa';
+            responseSent = true;
         }
         
         // --- Fallback to General FAQ and Default Response ---
@@ -183,7 +180,7 @@ client.on('message', async (message) => {
 
         // --- Final Fallback Message ---
         if (!responseSent) {
-            const fallbackMessage = "Maaf, saya tidak mengerti pertanyaanmu. Coba ulangi pertanyaannya atau tanyakan hal lain terkait PIONIR UGM. 😊";
+            const fallbackMessage = "Maaf, Pio-Bot belum mengerti pertanyaanmu. Coba ulangi pertanyaanmu dengan pertanyaan terkait PIONIR UGM atau Inforamasi Umum UGM lainnya 😊";
             await message.reply(fallbackMessage);
             console.log(`📤 Sent fallback response: "${fallbackMessage}"`);
         }
